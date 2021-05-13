@@ -19,11 +19,13 @@ namespace MusicalInstrument
             Type = SignalGeneratorType.Sin,
             Gain = 0.2
         };
+
+        WaveOutEvent player = new WaveOutEvent();
+
         public Form1()
         {
             InitializeComponent();
 
-            var player = new WaveOutEvent();
             player.Init(sine);
 
             trackFrequency.ValueChanged += (s, e) => sine.Frequency = trackFrequency.Value;
@@ -32,19 +34,40 @@ namespace MusicalInstrument
             trackVolume.ValueChanged += (s, e) => player.Volume = trackVolume.Value / 100F;
             trackVolume.Value = 50;
 
-            MouseDown += (s, e) => player.Play();
-            MouseUp += (s, e) => player.Stop();
+        }
+        private System.Drawing.Point CursorPositionOnMouseDown;
+        private bool ButtonIsDown = false;
+        private void TheMouseDown(object sender, MouseEventArgs e)
+        {
+            player.Play();
 
-            trackFrequency.MouseDown += (s, e) => player.Play();
-            trackFrequency.MouseUp += (s, e) => player.Stop();
+            CursorPositionOnMouseDown = e.Location;
+            ButtonIsDown = true; 
+        }
 
-            trackVolume.MouseDown += (s, e) => player.Play();
-            trackVolume.MouseUp += (s, e) => player.Stop();
-
-
-
+        private void TheMouseUp(object sender, MouseEventArgs e)
+        {
+            player.Stop();
+            ButtonIsDown = false;
 
         }
 
+        private void panel_MouseMove(object sender, MouseEventArgs e)
+        {
+            var dX = e.X - CursorPositionOnMouseDown.X;
+           // var vol = 
+
+            var dY = CursorPositionOnMouseDown.Y - e.Y;
+            // var freq = 
+
+
+
+            if (ButtonIsDown)
+            {
+
+            }
+
+            Text = $"Musical Instrument! ({dX},{dY}) (vol, freq)";
+        }
     }
 }
